@@ -1,9 +1,15 @@
+$(document).ready(function(){
 var lines = {
   N: ['N_Times_Square','N_34th','N_28th','N_23rd','Union_Square','N8th'],
   L: ['L8th','L_6th','Union_Square','L_3rd','L_1st'],
   L6: ['Grand_Central','L6_33rd','L6_28th','L6_23rd','Union_Square','L6_Astor_Place'],
   Seven: ['Seven_Queensboro_Plaza', 'Seven_Court_Sq', 'Seven_Hunters_Point_Avenue', 'Seven_Vernon_Boulevard','Grand_Central']
 };
+
+var $startline = $('#start-line');
+var $stopline = $('#stop-line');
+var $startstation = $('#start-station');
+var $stopstation = $('#stop-station');
 
 function intersection_destructive(a, b)
 {
@@ -54,26 +60,49 @@ var stops_list = function(hash, start_station, end_station) {
   }
 }
 
-var stationFactory = function (position){
-  var station = {
-    position: position,
-    line: prompt(position + " line:"),
-    station: prompt(position + " station:")
+
+var startStation = 0;
+var endStation = 0;
+
+
+
+$(document).on('change',function() {
+
+  var getStations = function(line, dropdown) {
+    var stations = lines[line];
+    for (var index in stations) {
+      var station = stations[index];
+      var option = $('<option>').attr("value",station).text(station);
+      dropdown.append(option);
+    }
+  }
+
+  // Populate
+  var lineDropdowns = [$startline, $stopline];
+  var stationDropdowns = [$startstation, $stopstation];
+  for (var index in stationDropdowns) {
+    var dropdown = stationDropdowns[index];
+    var line = lineDropdowns[index].val();
+    getStations(line, dropdown);
+  }
+
+  var startStation = {
+    line: $('#start-line').val(),
+    station: $('#start-station').val()
   };
-  return station;
-}
+  var endStation = {
+      line: $('#stop-line').val(),
+      station: $('#stop-station').val()
+  };
+  console.log(stops_list(lines, startStation, endStation));
+});
 
-var startStation = stationFactory("Start");
-var endStation = stationFactory("End");
-// var startStation = {
-//     line: "L",
-//     station: "L_1st"
-// };
-// var endStation = {
-//     line: "N",
-//     station: "N_Times_Square"
-// };
-
-stops = stops_list(lines, startStation, endStation);
-console.log(stops);
-console.log("Journey will be " + stops.length + " stops.");
+  dropDown = [$startline, $stopline];
+  for (var index in dropDown){
+    var currentDD = dropDown[index]
+    for (var line in lines) {
+      var option = $('<option>').attr("value",line).text(line);
+      currentDD.append(option);
+    }
+  }
+})
